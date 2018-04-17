@@ -11,7 +11,7 @@
       </li>
       
     </ul>
-    {!! Form::open([ 'method' => 'POST', 'class' => 'form-inline my-2 my-lg-0' ]) !!}
+    {!! Form::open([ 'route' => 'login', 'method' => 'POST', 'class' => 'form-inline my-2 my-lg-0' ]) !!}
       @csrf
       {!! Form::email('email',null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'example@example.com']) !!}
       {!! Form::password('password', ['class' => 'form-control mr-sm-2', 'placeholder' => 'Contraseña']) !!}
