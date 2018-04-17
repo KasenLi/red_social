@@ -13,7 +13,7 @@
     </ul>
     {!! Form::open([ 'route' => 'login', 'method' => 'POST', 'class' => 'form-inline my-2 my-lg-0' ]) !!}
       @csrf
-      {!! Form::email('email',null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'example@example.com']) !!}
+      {!! Form::text('login',null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'Username ó Email', 'id' => 'login', 'required' => 'true', 'autofocus' => 'true']) !!}
       {!! Form::password('password', ['class' => 'form-control mr-sm-2', 'placeholder' => 'Contraseña']) !!}
       {!! Form::submit('Entrar', ['class' => 'btn btn-secondary my-2 my-sm-0']) !!}
     {!! Form::close() !!}
