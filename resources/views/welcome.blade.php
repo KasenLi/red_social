@@ -3,7 +3,7 @@
 @section('title', 'Home')
 
 @section('content')
-    <div class="form-register">
+    <div class="form-register" style="margin-top: 10%;">
         @include('auth.register')
     </div>
 @endsection

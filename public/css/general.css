@@ -1,6 +1,11 @@
 .page-content{
 	padding: 10px;
+	margin-top: 5%;
+	height: 70vh;
 }
 .page-footer{
 	padding: 20px;
+}
+.form-register{
+	margin-top: 10%;
 }
