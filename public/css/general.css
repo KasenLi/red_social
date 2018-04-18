@@ -9,3 +9,6 @@
 .form-register{
 	margin-top: 10%;
 }
+.textarea-content{
+	min-height: 200px;
+}

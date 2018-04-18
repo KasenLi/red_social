@@ -1,22 +1,17 @@
 @extends('front.template.main')
 
 @section('content')
-<div class="container">
+<div class="container" style="margin-top: -3%;">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
+            {!! Form::open(['method' => 'POST', ]) !!}
+                <div class="form-group">
+                    {!! Form::textarea('body', null, ['class' => 'form-control textarea-content', 'placeholder' => 'Nueva publicación...', 'required']) !!}
                 </div>
-            </div>
+                <div class="form-group">
+                    {!! Form::submit('Publicar', ['class' => 'btn btn-primary float-right'] ) !!}
+                </div>
+            {!! Form::close() !!}
         </div>
     </div>
 </div>
