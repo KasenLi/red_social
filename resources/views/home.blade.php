@@ -5,6 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             {!! Form::open(['method' => 'POST', ]) !!}
+                @csrf
                 <div class="form-group">
                     {!! Form::textarea('body', null, ['class' => 'form-control textarea-content', 'placeholder' => 'Nueva publicación...', 'required']) !!}
                 </div>
