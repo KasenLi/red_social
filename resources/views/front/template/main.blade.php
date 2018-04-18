@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>@yield('title', 'Home') | Red Social </title>
-	<link rel="stylesheet" href="{{ asset('plugins/bootstrap/css/yeti/bootstrap.css')}}">
+	<link rel="stylesheet" href="{{ asset('plugins/bootstrap/css/cerulean/bootstrap.css')}}">
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/general.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/fontawesome-all.css')}}">
 	<link rel="stylesheet" href="{{ asset('plugins/chosen/chosen.css') }}">
