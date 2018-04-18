@@ -10,5 +10,6 @@
 	margin-top: 10%;
 }
 .textarea-content{
-	min-height: 200px;
+	min-height: 190px;
+	max-height: 190px;
 }
