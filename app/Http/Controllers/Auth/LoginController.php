@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 
 class LoginController extends Controller
 {
@@ -58,6 +59,7 @@ class LoginController extends Controller
             return redirect()->intended($this->redirectPath());
         }
 
+        Flash::warning('Las credenciales no coinciden.')->important();
         return redirect()->back()->withInput()->withErrors(['login' => 'Las credenciales no coinciden.']);
     }
 }
