@@ -14,7 +14,10 @@
 </head>
 <body>
 	@include('front.template.partials.nav')
+	@include('front.template.partials.errors')
 	<section class="page-content">
+		@include('flash::message')
+
 		@yield('content')
 	</section>
 
