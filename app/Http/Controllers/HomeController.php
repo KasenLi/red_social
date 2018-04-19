@@ -36,6 +36,8 @@ class HomeController extends Controller
         $post = Post::find($id);
         $likes = $post->likes + 1;
         $post->likes = $likes;
-        $post->save(); 
+        $post->save();
+        
+        return redirect()->route('home'); 
     }
 }

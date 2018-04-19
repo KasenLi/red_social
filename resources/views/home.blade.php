@@ -36,7 +36,7 @@
                         <p class="card-text">{{ $post->body}}</p>
                     </div>
                     <div class="card-footer text-muted">
-                        <a href="#" class="like" >
+                        <a href="{{ route('post.update.like', $post->id)}}" class="like" >
                             <button class="like-button" id="like" onclick="like()"><i class="far fa-thumbs-up"></i></button>
 
                         </a>

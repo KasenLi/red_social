@@ -36,4 +36,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::put('post/{id}', 'HomeController@like');
+Route::get('post/{id}',[
+	'uses'	=>	'HomeController@like',
+	'as'	=>	'post.update.like'
+]);
