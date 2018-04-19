@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use Illuminate\Support\Facades\Auth;
+use Laracasts\Flash\Flash;
 
 class PostsController extends Controller
 {
@@ -40,7 +42,10 @@ class PostsController extends Controller
         ]);
 
         $post = new Post($request->all());
+        $post->user_id = \Auth::user()->id;
         $post->save();
+
+        return redirect()->route('/home');
     }
 
     /**
@@ -85,6 +90,15 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::find($id);
+
+        if(Auth::user()->type == "admin" || $post->user == Auth::user()){
+            $post->delete();
+
+            return redirect()->route('/home');
+        }else{
+            Flash::warning('No tienes permisos para eliminar esta publicación.')->important();
+            return redirect()-route('/home');
+        }
     }
 }
