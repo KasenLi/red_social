@@ -13,3 +13,20 @@
 	min-height: 190px;
 	max-height: 190px;
 }
+.container-posts{
+	background-color: #ddd;
+
+}
+.like-button{
+	background: transparent;
+	border:none;
+	border-radius: 50%;
+	cursor: pointer;
+}
+.like:hover{
+	background-color: #ddd;
+	text-decoration: none;
+}
+.like{
+	cursor: pointer;
+}

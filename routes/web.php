@@ -14,6 +14,19 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('profile/{name}', [
+	'uses'	=>	'HomeController@viewUser',
+	'as'	=>	'front.view.user'
+]);
+
+Route::resource('posts', 'PostsController');
+
+Route::get('posts/{id}/destroy', [
+	'uses'	=>	'PostsController@destroy',
+	'as'	=>	'posts.destroy'
+]);
+
 Route::group(['prefix' => 'admin', 'middleware' => ['auth'] ], function(){
 	Route::get('/', function() {
 		return view('welcome');
@@ -22,3 +35,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth'] ], function(){
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::put('post/{id}', 'HomeController@like');

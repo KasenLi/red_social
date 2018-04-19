@@ -24,7 +24,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts = Post::orderBy('id', 'DESC')->get();
+        $posts = Post::orderBy('id', 'DESC')->paginate(4);
+        $posts->each(function($posts){
+            $posts->user;
+        });
         return view('home')->with('posts', $posts);
+    }
+
+    public function like($id)
+    {
+        $post = Post::find($id);
+        $likes = $post->likes + 1;
+        $post->likes = $likes;
+        $post->save(); 
     }
 }
