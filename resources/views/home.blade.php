@@ -36,11 +36,16 @@
                         <p class="card-text">{{ $post->body}}</p>
                     </div>
                     <div class="card-footer text-muted">
-                        <a href="{{ route('post.update.like', $post->id)}}" class="like" >
-                            <button class="like-button" id="like" onclick="like()"><i class="far fa-thumbs-up"></i></button>
+                        {!! Form::open(['route' => ['post.update.like', $post->id], 'method' => 'POST']) !!}
+                            <a href="#" class="like" >
+                                <button class="like-button" id="like" onclick="like()">
+                                    <i class="far fa-thumbs-up"></i>
+                                </button>
 
-                        </a>
-                        {{$post->likes}}
+                            </a>
+                            <span id="post_likes">{{ $post->likes}}</span>
+                        {!! Form::close() !!}
+                        
                     </div>
                     <p id="liked"></p>
                 </div>
@@ -57,5 +62,20 @@
         function like() {
             document.getElementById("like").style.background = "#4286f4";
         }
+
+        $(document).ready(function(){
+            $('.like').click(function(e){
+                e.preventDefault();
+
+                var form = $(this).parents('form');
+                var url = form.attr('action');
+
+                $.post(url,form.serialize(), function(result){
+                    $('#post_likes').html(result.total);
+                }).fail(function(){
+                    $('.alert').html('Algo salió mal');
+                });
+            });
+        });
     </script>
 @endsection

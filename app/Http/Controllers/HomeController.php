@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use App\PostLike;
 
 class HomeController extends Controller
 {
@@ -31,13 +32,25 @@ class HomeController extends Controller
         return view('home')->with('posts', $posts);
     }
 
-    public function like($id)
+    public function like(Request $request, $id)
     {
-        $post = Post::find($id);
-        $likes = $post->likes + 1;
-        $post->likes = $likes;
-        $post->save();
-        
-        return redirect()->route('home'); 
+        if($request->ajax()){
+            $post = Post::find($id);
+            $likes = $post->likes + 1;
+            $post->likes = $likes;
+            $post->save();
+
+            $post_like = new PostLike($request->all());
+            $post_like->user_id = \Auth::user()->id;
+            $post_like->post_id = $id;
+            $post_like->save();
+
+            $likes_count = PostLike::where('post_id', $id)->count();
+            
+            return response()->json([
+                'total' => $likes_count
+            ]);
+        }
+         
     }
 }
