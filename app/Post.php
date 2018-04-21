@@ -16,7 +16,7 @@ class Post extends Model
     public function comments(){
     	return $this->hasMany('App\Comment');
     }
-    public function likes(){
+    public function post_likes(){
     	return $this->hasMany('App\PostLike');
     }
     
