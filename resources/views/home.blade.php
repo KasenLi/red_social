@@ -36,16 +36,26 @@
                         <p class="card-text">{{ $post->body}}</p>
                     </div>
                     <div class="card-footer text-muted">
-                        {!! Form::open(['route' => ['post.update.like', $post->id], 'method' => 'POST']) !!}
+                        @foreach($post->post_likes as $likes)
+                        {!! Form::open(['route' => ['post.update.like', $post->id], 'method' => 'GET']) !!}
+                            
+                            @if($likes->user_id == Auth::user()->id)
+                            <a href="#" class="like" >
+                                <button class="like-button" id="like" style="background-color: #4286f4;" onclick="like()">
+                                    <i class="far fa-thumbs-up"></i>
+                                </button>
+                            </a>
+                            @else
                             <a href="#" class="like" >
                                 <button class="like-button" id="like" onclick="like()">
                                     <i class="far fa-thumbs-up"></i>
                                 </button>
-
                             </a>
-                            <span id="post_likes">{{ $post->likes}}</span>
+                            @endif                         
+                            <span id="post_likes" >{{ $post->likes}}</span>
+                            
                         {!! Form::close() !!}
-                        
+                        @endforeach
                     </div>
                     <p id="liked"></p>
                 </div>
@@ -70,7 +80,7 @@
                 var form = $(this).parents('form');
                 var url = form.attr('action');
 
-                $.post(url,form.serialize(), function(result){
+                $.get(url,form.serialize(), function(result){
                     $('#post_likes').html(result.total);
                 }).fail(function(){
                     $('.alert').html('Algo salió mal');
