@@ -1,7 +1,7 @@
 @extends('front.template.main')
 
 @section('content')
-<div class="container" style="margin-top: -3%;">
+<div class="container" style="margin-top: -3%; height: auto;">
     <div class="row justify-content-center">
         <div class="col-md-10">
             {!! Form::open([ 'route'=> 'posts.store', 'method' => 'POST' ]) !!}
@@ -36,26 +36,37 @@
                         <p class="card-text">{{ $post->body}}</p>
                     </div>
                     <div class="card-footer text-muted">
-                        @foreach($post->post_likes as $likes)
+                    
                         {!! Form::open(['route' => ['post.update.like', $post->id], 'method' => 'GET']) !!}
+                            @if($post->likes == 0)
+                                <a href="#" class="like">
+                                    <button class="like-button" id="like" onclick="action_like()">
+                                        <i class="far fa-thumbs-up"></i>
+                                    </button>
+                                </a>                     
+                                <span id="post_likes">{{ $post->likes}}</span>
                             
-                            @if($likes->user_id == Auth::user()->id)
-                            <a href="#" class="like" >
-                                <button class="like-button" id="like" style="background-color: #4286f4;" onclick="like()">
-                                    <i class="far fa-thumbs-up"></i>
-                                </button>
-                            </a>
                             @else
-                            <a href="#" class="like" >
-                                <button class="like-button" id="like" onclick="like()">
-                                    <i class="far fa-thumbs-up"></i>
-                                </button>
-                            </a>
-                            @endif                         
-                            <span id="post_likes" >{{ $post->likes}}</span>
-                            
+                        
+                                <a href="#" class="like" >
+                                    <button class="like-button" id="like" onclick="action_like()" 
+                                    @foreach($post->post_likes as $likes)
+                                        @if($likes->user_id === Auth::user()->id)
+                                        style="background-color: #4286f4;"
+                                        @else
+                                        style="background-color: white;"
+                                        @endif
+                                    @endforeach
+                                     />
+                                        <i class="far fa-thumbs-up"></i>
+                                    </button>
+                                </a>
+
+                                <span id="post_likes" >{{ $post->likes}}</span>
+                       
+                            @endif
                         {!! Form::close() !!}
-                        @endforeach
+                        
                     </div>
                     <p id="liked"></p>
                 </div>
@@ -69,11 +80,19 @@
 
 @section('js')
     <script type="text/javascript">
-        function like() {
-            document.getElementById("like").style.background = "#4286f4";
+        var activo = false;
+        function action_like(){
+            if(activo == false){
+                document.getElementById("like").style.background = "#4286f4";
+                activo = true;    
+            }else{
+                document.getElementById("like").style.background = "#fff";
+            }
+            
         }
-
+        
         $(document).ready(function(){
+            
             $('.like').click(function(e){
                 e.preventDefault();
 
@@ -82,6 +101,7 @@
 
                 $.get(url,form.serialize(), function(result){
                     $('#post_likes').html(result.total);
+                    $('#like_status_c').html(result.mensaje);
                 }).fail(function(){
                     $('.alert').html('Algo salió mal');
                 });

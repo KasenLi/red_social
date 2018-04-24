@@ -45,7 +45,7 @@ class PostsController extends Controller
         $post->user_id = \Auth::user()->id;
         $post->save();
 
-        return redirect()->route('/home');
+        return redirect()->route('home');
     }
 
     /**
