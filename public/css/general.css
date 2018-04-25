@@ -38,3 +38,16 @@
 	margin-top: 4px;
 	text-align: center;
 }
+.textarea-comment{
+	max-height: 60px;
+	min-height: 50px;
+	border-radius: 20px;
+}
+.comment-collapse{
+	margin-left: 10px;
+}
+.comment-form{
+	padding: 10px 15px 0 15px;
+	box-sizing: border-box;
+	margin-bottom: 40px;
+}

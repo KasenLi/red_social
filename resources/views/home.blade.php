@@ -38,6 +38,7 @@
                     <div class="card-footer text-muted">
                     
                         {!! Form::open(['route' => ['post.update.like', $post->id], 'method' => 'GET']) !!}
+                            @csrf
                             @if($post->likes == 0)
                                 <a href="#" class="like">
                                     <button class="like-button" id="like" onclick="action_like()">
@@ -45,9 +46,7 @@
                                     </button>
                                 </a>                     
                                 <span id="post_likes">{{ $post->likes}}</span>
-                            
                             @else
-                        
                                 <a href="#" class="like" >
                                     <button class="like-button" id="like" onclick="action_like()" 
                                     @foreach($post->post_likes as $likes)
@@ -61,15 +60,73 @@
                                         <i class="far fa-thumbs-up"></i>
                                     </button>
                                 </a>
-
                                 <span id="post_likes" >{{ $post->likes}}</span>
-                       
                             @endif
+                            <div class="float-right">
+                                <i class="fa fa-clock"></i> {{$post->created_at->diffForHumans()}}
+                            </div>
                         {!! Form::close() !!}
-                        
                     </div>
-                    <p id="liked"></p>
                 </div>
+                <p style="padding-left: 20px;">Comentarios<p>
+                @foreach($comments as $comment)
+
+                    @if($comment->post_id == $post->id)
+                        <div class="comment-container">
+                             <div class="card" style="padding: 20px; box-sizing: border-box;">
+                                 <div class="card-header">
+                                     {{$comment->user->name}}
+                                 </div>
+                                 <div class="card-body">
+                                     {{$comment->body}}
+                                 </div>
+                                 <div class="card-footer">
+                                     {!! Form::open(['route' => ['comment.like', $comment->id], 'method' => 'GET']) !!}
+                                        @csrf
+                                        @if($comment->likes == 0)
+                                            <a href="#" class="comment-like">
+                                                <button class="like-button" id="comment-like" onclick="action_comment_like()">
+                                                    <i class="far fa-thumbs-up"></i>
+                                                </button>
+                                            </a>                     
+                                            <span id="comment_likes">{{ $comment->likes}}</span>
+                                        @else
+                                            <a href="#" class="comment-like" >
+                                                <button class="like-button" id="comment-like" onclick="action_comment_like()" 
+                                                @if(is_array($comment->comment_likes) || is_object($comment->comment_likes))
+                                                    @foreach($comment->comment_likes as $c_likes)
+                                                        @if($c_likes->user_id === Auth::user()->id)
+                                                        style="background-color: #4286f4;"
+                                                        @else
+                                                        style="background-color: white;"
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                                 />
+                                                    <i class="far fa-thumbs-up"></i>
+                                                </button>
+                                            </a>
+                                            <span id="comment_likes" >{{ $comment->likes}}</span>
+                                        @endif
+                                        <div class="float-right">
+                                            <i class="fa fa-clock"></i> {{$comment->created_at->diffForHumans()}}
+                                        </div>
+                                    {!! Form::close() !!}
+                                 </div>
+                             </div>
+                        </div>  
+                    @endif
+                @endforeach
+                {!! Form::open(['route' => ['post.comment', $post->id], 'method' => 'POST', 'class' => 'comment-form']) !!}
+                    @csrf
+                    <div class="form-group">
+                        {!! Form::textarea('body', null, ['class' => 'form-control textarea-comment', 'id' => 'comment', 'placeholder' => 'Escribe un comentario...', 'required', 'rows' => '3']) !!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::submit('Comentar', ['class' => 'btn btn-primary float-right'] ) !!}
+                    </div>
+                {!! Form::close() !!}
+                
                 <br>
             </div>
             @endforeach
@@ -81,12 +138,24 @@
 @section('js')
     <script type="text/javascript">
         var activo = false;
+        var c_activo = false;
         function action_like(){
             if(activo == false){
                 document.getElementById("like").style.background = "#4286f4";
                 activo = true;    
             }else{
                 document.getElementById("like").style.background = "#fff";
+                activo = false;
+            }
+            
+        }
+        function action_comment_like(){
+            if(c_activo == false){
+                document.getElementById("comment-like").style.background = "#4286f4";
+                c_activo = true;    
+            }else{
+                document.getElementById("comment-like").style.background = "#fff";
+                c_activo = false;
             }
             
         }
@@ -101,6 +170,19 @@
 
                 $.get(url,form.serialize(), function(result){
                     $('#post_likes').html(result.total);
+                    $('#like_status_c').html(result.mensaje);
+                }).fail(function(){
+                    $('.alert').html('Algo salió mal');
+                });
+            });
+
+            $('.comment-like').click(function(e){
+                e.preventDefault();
+                var form = $(this).parents('form');
+                var url = form.attr('action');
+
+                $.get(url,form.serialize(), function(result){
+                    $('#comment_like').html(result.total);
                     $('#like_status_c').html(result.mensaje);
                 }).fail(function(){
                     $('.alert').html('Algo salió mal');

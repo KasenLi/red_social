@@ -22,6 +22,8 @@ Route::get('profile/{name}', [
 
 Route::resource('posts', 'PostsController');
 
+Route::resource('comments', 'CommentsController');
+
 Route::get('posts/{id}/destroy', [
 	'uses'	=>	'PostsController@destroy',
 	'as'	=>	'posts.destroy'
@@ -39,4 +41,14 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('post/{id}',[
 	'uses'	=>	'HomeController@like',
 	'as'	=>	'post.update.like'
+]);
+
+Route::post('post/{id}/comment', [
+	'uses' 	=>	'HomeController@comment',
+	'as'	=>	'post.comment'
+]);
+
+Route::get('comment/{id}', [
+	'uses'	=>	'HomeController@comment_like',
+	'as'	=>	'comment.like'
 ]);

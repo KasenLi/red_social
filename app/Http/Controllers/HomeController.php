@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Post;
 use App\PostLike;
+use App\Comment;
+use App\CommentLike;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -17,6 +20,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        Carbon::setLocale('es');
     }
 
     /**
@@ -27,12 +31,18 @@ class HomeController extends Controller
     public function index()
     {
         $posts = Post::orderBy('id', 'DESC')->paginate(4);
-        $post_likes = PostLike::where('user_id', Auth::user()->id)->get();
+        //$post_likes = PostLike::where('user_id', Auth::user()->id)->get();
         $posts->each(function($posts){
             $posts->user;
             $posts->post_likes;
         });
-        return view('home')->with('posts', $posts)->with('post_likes', $post_likes);
+        $comments = Comment::orderBy('id', 'ASC')->get();
+        $comments->each(function($comments){
+            $comments->user;
+            $comments->comment_likes;
+        });
+        
+        return view('home')->with('posts', $posts)->with('comments', $comments);
     }
 
     public function like(Request $request, $id)
@@ -92,5 +102,76 @@ class HomeController extends Controller
         ]);
             
     }
-         
+
+    public function comment(Request $request, $id)
+    {
+        $this->validate($request, [
+            'body' => 'required|max:1000'
+        ]);
+
+        $comment = new Comment($request->all());
+        $comment->user_id = \Auth::user()->id;
+        $comment->post_id = $id;
+        $comment->save();
+
+        return redirect()->route('home');
+    }
+    
+    public function comment_like(Request $request, $id)
+    {
+        if($request->ajax()){
+            $existe_like = CommentLike::where('comment_id', $id)->get();
+            $comment = Comment::find($id);
+            $message = "";
+            $likes_count = 0;
+            if(count($existe_like) > 0){
+               foreach ($existe_like as $like) {
+                    global $message, $likes_count;
+                    if($like->user_id !== \Auth::user()->id){
+                        
+                        $likes = $comment->likes + 1;
+                        $comment->likes = $likes;
+                        $comment->save();
+
+                        $comment_like = new CommentLike($request->all());
+                        $comment_like->user_id = \Auth::user()->id;
+                        $comment_like->post_id = $id;
+                        $comment_like->save();
+
+                        $likes_count = CommentLike::where('comment_id', $id)->count();
+                        $message = "Ya no me gusta";
+                        
+                    }else{
+
+                        $user_id = \Auth::user()->id;
+                        $comment_like = CommentLike::where('user_id', $user_id)->where('comment_id', $id);
+                        $comment_like->delete();
+                        $likes = $comment->likes - 1;
+                        $comment->likes = $likes;
+                        $comment->save();
+                        $message = "Me gusta";
+                        $likes_count = PostLike::where('post_id', $id)->count();
+                    }
+                }
+
+            }else{
+                $likes = $comment->likes + 1;
+                $comment->likes = $likes;
+                $comment->save();
+                $comment_like = new CommentLike($request->all());
+                $comment_like->user_id = \Auth::user()->id;
+                $comment_like->comment_id = $id;
+                $comment_like->save();
+
+                $likes_count = CommentLike::where('comment_id', $id)->count();
+                $message = "Ya no me gusta";
+            } 
+        }
+            
+        return response()->json([
+            'total' =>  $likes_count,
+            'mensaje' => $message
+        ]);
+            
+    }     
 }
