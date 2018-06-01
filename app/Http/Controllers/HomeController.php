@@ -45,6 +45,20 @@ class HomeController extends Controller
         return view('home')->with('posts', $posts)->with('comments', $comments);
     }
 
+    public function comment(Request $request, $id)
+    {
+        $this->validate($request, [
+            'body' => 'required|max:1000'
+        ]);
+
+        $comment = new Comment($request->all());
+        $comment->user_id = \Auth::user()->id;
+        $comment->post_id = $id;
+        $comment->save();
+
+        return redirect()->route('home');
+    }
+
     public function like(Request $request, $id)
     {
         if($request->ajax()){
@@ -68,9 +82,7 @@ class HomeController extends Controller
 
                         $likes_count = PostLike::where('post_id', $id)->count();
                         $message = "Ya no me gusta";
-                        
                     }else{
-
                         $user_id = \Auth::user()->id;
                         $post_like = PostLike::where('user_id', $user_id)->where('post_id', $id);
                         $post_like->delete();
@@ -81,7 +93,6 @@ class HomeController extends Controller
                         $likes_count = PostLike::where('post_id', $id)->count();
                     }
                 }
-
             }else{
                 $likes = $post->likes + 1;
                 $post->likes = $likes;
@@ -95,26 +106,10 @@ class HomeController extends Controller
                 $message = "Ya no me gusta";
             } 
         }
-            
         return response()->json([
             'total' =>  $likes_count,
             'mensaje' => $message
-        ]);
-            
-    }
-
-    public function comment(Request $request, $id)
-    {
-        $this->validate($request, [
-            'body' => 'required|max:1000'
-        ]);
-
-        $comment = new Comment($request->all());
-        $comment->user_id = \Auth::user()->id;
-        $comment->post_id = $id;
-        $comment->save();
-
-        return redirect()->route('home');
+        ]);   
     }
     
     public function comment_like(Request $request, $id)
@@ -122,24 +117,24 @@ class HomeController extends Controller
         if($request->ajax()){
             $existe_like = CommentLike::where('comment_id', $id)->get();
             $comment = Comment::find($id);
-            $message = "";
-            $likes_count = 0;
+            $message_c = "";
+            $likes_count_c = 0;
             if(count($existe_like) > 0){
                foreach ($existe_like as $like) {
-                    global $message, $likes_count;
+                    global $message_c, $likes_count_c;
                     if($like->user_id !== \Auth::user()->id){
                         
                         $likes = $comment->likes + 1;
                         $comment->likes = $likes;
                         $comment->save();
 
-                        $comment_like = new CommentLike($request->all());
-                        $comment_like->user_id = \Auth::user()->id;
-                        $comment_like->post_id = $id;
-                        $comment_like->save();
+                        $new_comment_like = new CommentLike($request->all());
+                        $new_comment_like->user_id = \Auth::user()->id;
+                        $new_comment_like->comment_id = $id;
+                        $new_comment_like->save();
 
-                        $likes_count = CommentLike::where('comment_id', $id)->count();
-                        $message = "Ya no me gusta";
+                        $likes_count_c = CommentLike::where('comment_id', $id)->count();
+                        $message_c = "Ya no me gusta";
                         
                     }else{
 
@@ -149,11 +144,10 @@ class HomeController extends Controller
                         $likes = $comment->likes - 1;
                         $comment->likes = $likes;
                         $comment->save();
-                        $message = "Me gusta";
-                        $likes_count = PostLike::where('post_id', $id)->count();
+                        $message_c = "Me gusta";
+                        $likes_count_c = CommentLike::where('comment_id', $id)->count();
                     }
                 }
-
             }else{
                 $likes = $comment->likes + 1;
                 $comment->likes = $likes;
@@ -163,14 +157,13 @@ class HomeController extends Controller
                 $comment_like->comment_id = $id;
                 $comment_like->save();
 
-                $likes_count = CommentLike::where('comment_id', $id)->count();
-                $message = "Ya no me gusta";
+                $likes_count_c = CommentLike::where('comment_id', $id)->count();
+                $message_c = "Ya no me gusta";
             } 
         }
-            
         return response()->json([
-            'total' =>  $likes_count,
-            'mensaje' => $message
+            'total' =>  $likes_count_c,
+            'mensaje' => $message_c
         ]);
             
     }     

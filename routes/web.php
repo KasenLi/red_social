@@ -52,3 +52,8 @@ Route::get('comment/{id}', [
 	'uses'	=>	'HomeController@comment_like',
 	'as'	=>	'comment.like'
 ]);
+
+Route::get('profile/{name}', [
+	'uses'	=>	'ProfileController@index',
+	'as'	=>	'profile.index'
+]);

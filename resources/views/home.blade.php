@@ -73,14 +73,14 @@
 
                     @if($comment->post_id == $post->id)
                         <div class="comment-container">
-                             <div class="card" style="padding: 20px; box-sizing: border-box;">
-                                 <div class="card-header">
+                             <div class="card" style="padding: 20px; box-sizing: border-box; ">
+                                 <div class="card-header" style="border-left: 2px solid blue">
                                      {{$comment->user->name}}
                                  </div>
-                                 <div class="card-body">
+                                 <div class="card-body" style="border-left: 2px solid blue">
                                      {{$comment->body}}
                                  </div>
-                                 <div class="card-footer">
+                                 <div class="card-footer" style="border-left: 2px solid blue">
                                      {!! Form::open(['route' => ['comment.like', $comment->id], 'method' => 'GET']) !!}
                                         @csrf
                                         @if($comment->likes == 0)
@@ -182,7 +182,7 @@
                 var url = form.attr('action');
 
                 $.get(url,form.serialize(), function(result){
-                    $('#comment_like').html(result.total);
+                    $('#comment_likes').html(result.total);
                     $('#like_status_c').html(result.mensaje);
                 }).fail(function(){
                     $('.alert').html('Algo salió mal');
