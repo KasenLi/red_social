@@ -16,8 +16,9 @@
 	@include('front.template.partials.auth_nav')
 	@include('front.template.partials.errors')
 	<section class="page-content">
-		@include('flash::message')
-
+		<div style="width: 50%; margin:auto;">
+			@include('flash::message')
+		</div>
 		@yield('content')
 	</section>
 

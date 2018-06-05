@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Comment;
 use Carbon\Carbon;
+use Laracasts\Flash\Flash;
 
 class ProfileController extends Controller
 {
 	public function __construct()
     {
     	$this->middleware('auth');
+    	Flash::error('Debes iniciar sesión primero.')->important();
         Carbon::setLocale('es');
     }
     public function index($id){
